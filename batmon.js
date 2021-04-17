@@ -1,18 +1,15 @@
 const { exec } = require('child_process')
 
-// TODO test screen and checking logs
-
-function checkLevel()
+function batmon()
 {
-    exec('pmset -g batt', (err, stdout, stderr) => {
+    exec('pmset -g batt', (err, stdout) => {
         if (err) {
             console.log("Error pmseg: ", err)
-            console.log(`stderr pmseg: ${stderr}`)
             return
         }
 
         var myRegexp = /\d+(?:\.\d+)?%/g
-        var match = myRegexp.exec(stdout) //-InternalBattery-0 (id=6619235)	53%;
+        var match = myRegexp.exec(stdout) //ex.: -InternalBattery-0 (id=6619235)	53%;
 
         var level = -1
         
@@ -29,10 +26,10 @@ function checkLevel()
             return
         }
 
-        if (level > 65 || level < 20) //TODO if > 65 and charging or < 20 and discharging
+        if (level > 65)
             exec('afplay /System/Library/Sounds/Hero.aiff')
     })
-    setTimeout(checkLevel, 60 * 1000)
+    setTimeout(checkLevel, 60 * 1000) //every minute
 }
 
-checkLevel()
+batmon()
